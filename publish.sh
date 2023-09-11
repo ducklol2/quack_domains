@@ -6,6 +6,8 @@ function _term {
 
 trap _term SIGTERM
 
+#avahi-daemon &
+
 avahi-publish-address -R jfin.macmini.local 192.168.86.27 &
 
 echo 'Publishing.'

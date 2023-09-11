@@ -1,7 +1,9 @@
 FROM alpine
 
-RUN apk add --no-cache avahi-utils
+RUN apk add --no-cache avahi-tools
 
-COPY . /app
+COPY . .
 
-CMD ["/app/publish.sh"]
+RUN chmod +x publish.sh
+
+ENTRYPOINT ["/bin/sh", "publish.sh"]
