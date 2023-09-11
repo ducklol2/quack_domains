@@ -2,8 +2,11 @@ services:
     publish:
         container_name: publish
         build: .
-        volumes:
-          - /var/run/dbus:/var/run/dbus
-          - /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket
         network_mode: host
         privileged: true
+        restart: always
+        volumes:
+          - /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket
+          - /var/run/dbus:/var/run/dbus
+        environment:
+          - HOSTS=hello.local:192.168.1.100,abc.mac.local:192.168.1.123
