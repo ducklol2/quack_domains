@@ -1,0 +1,6 @@
+services:
+    publish:
+        container_name: publish
+        build:
+            dockerfile: DockerFile
+            network: host
