@@ -7,6 +7,12 @@ function _term {
 
 trap _term SIGTERM
 
+set -x
+
+curl -XGET --unix-socket /run/docker.sock http://localhost/version | jq .
+
+set +x
+
 if [ -z $HOSTS ]; then
 	echo "HOSTS not defined. Example: HOSTS=192.168.1.123:xyz.local"
 	echo "Hosts: $HOSTS"

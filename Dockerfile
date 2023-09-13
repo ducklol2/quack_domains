@@ -1,6 +1,6 @@
 FROM alpine
 
-RUN apk add --no-cache bash avahi-tools
+RUN apk add --no-cache bash avahi-tools curl jq
 
 COPY . .
 
