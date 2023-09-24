@@ -17,3 +17,14 @@ Run the Traefik example in the background with:
 ```
 docker compose -f traefik_example.yaml up -d
 ```
+
+### On GitHub Codespaces
+
+To get Avahi running:
+
+```
+sudo apt update
+sudo apt install avahi-daemon avahi-utils
+sudo service dbus start
+sudo avahi-daemon -D
+```
