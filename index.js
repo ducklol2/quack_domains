@@ -2,6 +2,22 @@ console.log('hi');
 
 const { request } = require('http');
 const { spawn } = require("child_process");
+const { networkInterfaces } = require('os');
+
+const ip = getIp();
+console.log(`Using IP: ${ip}`);
+function getIp() {
+  let ip;
+  for (const [interface, networks] of Object.entries(networkInterfaces())) {
+    for (const network of networks) {
+      if (network.internal) continue;
+      if (network.family != 'IPv4') continue;  // may be 4 in some node versions?
+      console.log(`found interface ${interface} with ipv4 ${network.address}, family ${network.family}`);
+      if (!ip) ip = network.address;  // just use first one, but list 'em all
+    }
+  }
+  return ip;
+}
 
 const options = {
   socketPath: '/run/docker.sock',
@@ -32,18 +48,13 @@ function handleContainers(containers) {
           const valueMatch = traefikHostRegex.exec(rule);
           if (valueMatch) {
             console.log(`container router host: ${valueMatch[1]}`);
-            publish(valueMatch[1], '192.168.1.123');
+            publish(valueMatch[1], ip);
           }
         }
       }
     }
   }
 }
-
-
-
-// echo "Adding hostname ${split_host[0]} pointing at IP ${split_host[1]}"
-// avahi-publish-address -R ${split_host[0]} ${split_host[1]} &
 
 function publish(host, ip) {
   console.log(`Running avahi-publish-address for host ${host} pointing to IP ${ip}`);
@@ -54,21 +65,3 @@ function publish(host, ip) {
   avahi.on('error', err => console.log('avahi err: ', err));
   avahi.on('close', code => console.log('avahi close: ', code));
 }
-
-// const ls = spawn("ls", ["-la"]);
-
-// ls.stdout.on("data", data => {
-//     console.log(`stdout: ${data}`);
-// });
-
-// ls.stderr.on("data", data => {
-//     console.log(`stderr: ${data}`);
-// });
-
-// ls.on('error', (error) => {
-//     console.log(`error: ${error.message}`);
-// });
-
-// ls.on("close", code => {
-//     console.log(`child process exited with code ${code}`);
-// });
