@@ -1,10 +1,10 @@
 # subdomains
 
-WARNING! This tool is very new and untested! You may need to dig into Node, Avahi, Traefik, and/or Docker if something doesn't work ;)
-
 This tool publishes custom `.local` addresses by searching for Docker containers with Traefik host labels.
 
 Run as a Docker container, it executes a NodeJS script at startup that lists all Docker containers, guesses what your local IPv4 address is, looks for Traefik HTTP router rules containing ``Host(`...`)``, and runs an instance of `avahi-publish-address` for each host pointing at the local IP.
+
+__WARNING!__ This tool is very new and untested! You may need to dig into Node, Avahi, Traefik, and/or Docker if something doesn't work ;)
 
 ## Requirements
 
@@ -20,7 +20,7 @@ Run as a Docker container, it executes a NodeJS script at startup that lists all
        sudo apt update && sudo apt install avahi-daemon && sudo service dbus start && sudo avahi-daemon -D
        ```
  - A non-Linux client
-    - I haven't gotten this working on Ubuntu for some reason... Tested on MacOS, iOS, & ChromeOS.
+    - I haven't gotten this working on Ubuntu for some reason... Tested on MacOS, iOS, & ChromeOS. ([GitHub issue](https://github.com/ducklol2/subdomains/issues/1))
 
 ## Instructions
 
