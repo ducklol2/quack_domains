@@ -20,7 +20,7 @@ __WARNING!__ This tool is very new and untested! You may need to dig into Node, 
        sudo apt update && sudo apt install avahi-daemon && sudo service dbus start && sudo avahi-daemon -D
        ```
  - A non-Linux client
-    - I haven't gotten this working on Ubuntu for some reason... Tested on MacOS, iOS, & ChromeOS. ([GitHub issue](https://github.com/ducklol2/subdomains/issues/1))
+    - For some reason, Ubuntu seems to ignore mDNS subdomains - `example.local` works, but `subdomain.example.local` does not. ([GitHub issue](https://github.com/ducklol2/subdomains/issues/1))
 
 ## Instructions
 
@@ -41,10 +41,27 @@ Or try my included example:
 sudo docker compose -f traefik_example.yaml up -d
 ```
 
-## Step 2: Start subdomains container
+### Step 2: Start subdomains container
 
 ```
 sudo docker compose up --build -d
 ```
 
+And then visit the domains from the compose YAML file - i.e. http://example.local/ and http://subdomain.example.local/.
+
 You'll need to rerun this if you modify your Traefik `Host()` labels; it currently only fetches the list of containers at startup (TODO: make it loop, occasionally?).
+
+## Using from other compose.yaml files
+
+Make sure to join Traefik's network if you want it to be able to proxy; in your compose.yaml:
+
+```
+services:
+  each_of_your_services:
+    networks: [traefik_network]
+
+networks:
+  traefik_network:
+    name: traefik_network
+    external: true
+```

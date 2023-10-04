@@ -1,23 +1,31 @@
 services:
 
   traefik:
-    image: "traefik:v2.10"
-    container_name: "traefik"
+    image: traefik
+    container_name: traefik
+    networks:
+      - traefik_network
     command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
     ports:
-      - "80:80"
-      - "8080:8080"
+      - 80:80
+      - 8080:8080
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
   whoami:
-    image: "traefik/whoami"
-    container_name: "simple-service"
+    image: traefik/whoami
+    container_name: example_whoami
+    networks:
+      - traefik_network
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`zotac.local`) || Host(`hello.zotac.local`) || Host(`x.blah2.local`)"
-      - "traefik.http.routers.whoami.entrypoints=web"
+      - traefik.enable=true
+      - traefik.http.routers.whoami.rule=Host(`example.local`) || Host(`subdomain.example.local`)
+      - traefik.http.routers.whoami.entrypoints=web
+
+networks:
+  traefik_network:
+    name: traefik_network
