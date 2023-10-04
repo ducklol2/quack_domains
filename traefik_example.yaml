@@ -4,7 +4,6 @@ services:
     image: "traefik:v2.10"
     container_name: "traefik"
     command:
-      #- "--log.level=DEBUG"
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
@@ -20,5 +19,5 @@ services:
     container_name: "simple-service"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`x.blah.local`) || Host(`x.blah2.local`)"
+      - "traefik.http.routers.whoami.rule=Host(`zotac.local`) || Host(`hello.zotac.local`) || Host(`x.blah2.local`)"
       - "traefik.http.routers.whoami.entrypoints=web"
