@@ -5,5 +5,7 @@
         "version": "latest",
         "moby": true
     }
-  }
+  },
+  // Sets up Avahi for use both inside & outside of the container.
+  "postStartCommand": "sudo apt-get update && sudo apt-get install -y avahi-daemon avahi-utils && sleep 5 && sudo service dbus start && sleep 5 && sudo avahi-daemon -D"
 }

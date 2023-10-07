@@ -63,17 +63,3 @@ sudo docker compose up --build -d
 And then visit the domains from the compose YAML file - i.e. http://example.local/ and http://subdomain.example.local/ (subdomains don't work on Ubuntu clients, though).
 
 You'll need to rerun this if you modify your Traefik `Host()` labels; it currently only fetches the list of containers at startup (__TODO__: make it loop, occasionally?).
-
-## Development
-
-To make the script work on GitHub Codespaces inside and outside of the container, run these:
-
-```
-sudo apt-get update
-sudo apt-get install avahi-daemon avahi-utils
-sudo service dbus start
-sudo avahi-daemon -D
-```
-
-__TODO__: Figure out how to run this automatically in `devcontainer.json`; it seems to hit
-this error if run too quickly: `Failed to create client object: Daemon not running`.
