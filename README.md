@@ -38,7 +38,7 @@ cd quack_domains
 Or try my included example:
 
 ```
-sudo docker compose -f traefik_example.yaml up -d
+sudo docker compose -f compose_example.yaml up -d
 ```
 
 ### Step 2: Start quack_domains container

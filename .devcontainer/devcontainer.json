@@ -5,5 +5,6 @@
         "version": "latest",
         "moby": true
     }
-  }
+  },
+  "postStartCommand": "sudo apt-get update && sudo apt-get install -y avahi-daemon && sudo service dbus start && sudo avahi-daemon -D"
 }

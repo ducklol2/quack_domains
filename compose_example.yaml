@@ -1,6 +1,6 @@
 services:
 
-  # A minimal traefik setup. For a better one, see:
+  # A minimal Traefik setup. For a better one, see:
   # https://doc.traefik.io/traefik/user-guides/docker-compose/basic-example/
   traefik:
     image: traefik

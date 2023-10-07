@@ -1,11 +1,33 @@
-console.log('hi');
-
 const { request } = require('http');
-const { spawn } = require("child_process");
+const { spawn } = require('child_process');
 const { networkInterfaces } = require('os');
 
-const ip = getIp();
-console.log(`Using IP: ${ip}`);
+const traefikRuleRegex = /traefik.http.routers.(\w+).rule/;
+const traefikHostRegex = /Host\(`([\w\.]+\.local)`\)/;
+
+main();
+
+function main() {
+  const ip = getIp();
+  console.log(`Using IP: ${ip}`);
+
+  const options = {
+    socketPath: '/run/docker.sock',
+    path: 'http://localhost/containers/json',
+  };
+
+  const callback = res => {
+    console.log(`STATUS: ${res.statusCode}`);
+    res.setEncoding('utf8');
+    res.on('data', data => publishContainers(JSON.parse(data), ip));
+    res.on('error', data => console.error(data));
+  };
+
+  const clientRequest = request(options, callback);
+  clientRequest.end();
+}
+
+// Guesses the local machine's local IP.
 function getIp() {
   let ip;
   for (const [interface, networks] of Object.entries(networkInterfaces())) {
@@ -19,24 +41,9 @@ function getIp() {
   return ip;
 }
 
-const options = {
-  socketPath: '/run/docker.sock',
-  path: 'http://localhost/containers/json',
-};
-
-const callback = res => {
-  console.log(`STATUS: ${res.statusCode}`);
-  res.setEncoding('utf8');
-  res.on('data', data => handleContainers(JSON.parse(data)));
-  res.on('error', data => console.error(data));
-};
-
-const clientRequest = request(options, callback);
-clientRequest.end();
-
-const traefikRuleRegex = /traefik.http.routers.(\w+).rule/;
-const traefikHostRegex = /Host\(`([\w\.]+)`\)/;
-function handleContainers(containers) {
+// Given the Docker container JSON list, finds matching
+// Traefik router labels with Host() rules and publishes them for the IP.
+function publishContainers(containers, ip) {
   for (const container of containers) {
     console.log(`container id ${container['Id']}`);
 
