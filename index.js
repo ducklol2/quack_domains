@@ -2,8 +2,15 @@ const { request } = require('http');
 const { spawn } = require('child_process');
 const { networkInterfaces } = require('os');
 
+// Format:
+// traefik.http.routers.my_example_server.rule=Host(`example.local`) || Host(`subdomain.example.local`) || Method(`GET`)
 const TRAEFIK_RULE_REGEX = /traefik.http.routers.(\w+).rule/;
-const TRAEFIK_HOST_REGEX = /Host\(`([\w\.]+\.local)`\)/;
+const TRAEFIK_HOST_REGEX = /Host\(`([-\w\.]+\.local)`\)/g;
+
+// Simpler label for people who don't use Traefik. Format:
+// quack_domains.hosts=another_example.local || subdomain.another_example.local
+const QUACK_RULE_REGEX = /quack_domains.hosts/;
+const QUACK_HOST_REGEX = /([-\w\.]+\.local)/g;
 
 // Shoutout to this great list of quick Docker API curl testing commands:
 // https://sleeplessbeastie.eu/2021/12/13/how-to-query-docker-socket-using-curl/
@@ -109,23 +116,31 @@ function handleDockerEvent(hostIp, data) {
 // Reads through the attributes and starts any Avahi publish processes, if new.
 function handleAttributes(hostIp, containerName, attributes) {
   for (const [label, labelValue] of Object.entries(attributes)) {
-    const labelMatch = TRAEFIK_RULE_REGEX.exec(label);
-    if (!labelMatch) continue;
+    const hosts = extractHosts(label, labelValue);
+    if (!hosts) continue;
 
-    for (const rule of labelValue.split('||')) {
-      const valueMatch = TRAEFIK_HOST_REGEX.exec(rule);
-      if (!valueMatch) continue;
+    for (const host of hosts) {
+      if (!processes[containerName]) processes[containerName] = {};
 
-      const host = valueMatch[1];
-      if (!processes[containerName]) {
-        processes[containerName] = {};
-      }
-      if (!processes[containerName][host]) {
-        console.log(`Container ${containerName} started. Host ${host}, IP ${hostIp}.`);
-        processes[containerName][host] = publish(host, hostIp);
-      }
+      // Skip if it's already running.
+      if (processes[containerName][host]) continue;
+
+      console.log(`Container ${containerName} started. Host ${host}, IP ${hostIp}.`);
+      processes[containerName][host] = publish(host, hostIp);
     }
   }
+}
+
+function extractHosts(label, labelValue) {
+  if (label.match(TRAEFIK_RULE_REGEX)) {
+    return [...labelValue.matchAll(TRAEFIK_HOST_REGEX)].map(match => match[1]);
+  }
+
+  if (label.match(QUACK_RULE_REGEX)) {
+    return [...labelValue.matchAll(QUACK_HOST_REGEX)].map(match => match[1]);
+  }
+
+  return undefined;
 }
 
 // Stops all the processes for the container, if any.

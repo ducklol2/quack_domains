@@ -20,4 +20,4 @@ services:
     labels:
       # The first two (*.local) are for recognized by duck_domains.
       # The last (Method(`GET`)) is just for testing convenience.
-      - traefik.http.routers.my_example_server.rule=Host(`example2.local`) || Host(`subdomain.example.local`) || Method(`GET`)
+      - traefik.http.routers.my_example_server.rule=Host(`example.local`) || Host(`subdomain.example.local`) || Method(`GET`)

@@ -9,6 +9,13 @@ labels:
   - traefik.http.routers.my_example_server.rule=Host(`example.local`)
 ```
 
+Or this, if not using Traefik:
+
+```
+labels:
+  - quack_domains.hosts=example.local
+```
+
 And publishes the `.local` addresses on your local network, for other devices to access:
 
 <img src="example_local_screenshot_desktop.png" height="150px"
@@ -18,14 +25,13 @@ alt="A mobile browser visiting the URL example.local">
 
 No client customization or DNS server needed!
 
-__WARNING!__ This tool is very new and untested! You may need to dig into Node, Avahi, Traefik, and/or Docker if something doesn't work ;)
+__WARNING!__ This tool is very new and untested! You may need to dig into Node, Avahi, and/or Docker if something doesn't work ;)
 
 ## Requirements
 
  - A Linux server, running:
    - Avahi
-   - Docker containers via Docker compose, with labels like the above
-     - Even if you don't use Traefik ([instructions](https://doc.traefik.io/traefik/user-guides/docker-compose/basic-example/)), this should work - you'll just need to add a label like above.
+   - Docker containers via Docker compose, with labels like one of those above
  - A client that supports mDNS, which is... virtually all of them. I've tested on Ubuntu, macOS, iOS, and ChromeOS.
     - Ubuntu quirk: out of the box, it ignores mDNS subdomains - `example.local` works, but `subdomain.example.local` does not. ([GitHub issue](https://github.com/ducklol2/quack_domains/issues/1))
 
@@ -33,7 +39,7 @@ __WARNING!__ This tool is very new and untested! You may need to dig into Node, 
 
 ### Step 0: Make sure Avahi is running
 
-This tool currently relies on the _host_ server's Avahi daemon. It's sometimes installed & running out of the box, but just to make sure, run this on your host server:
+This tool currently relies on the _host's_ Avahi daemon. It's sometimes installed & running out of the box, but just to make sure, run this on your host server:
 
 ```
 sudo apt-get update && sudo apt-get install avahi-daemon && sleep 5 && sudo service dbus start && sleep 5 && sudo avahi-daemon -D
@@ -56,11 +62,18 @@ It will monitor for Docker `start`/`stop` events.
 
 ### Step 3: Modify & start _your_ containers
 
-Make sure your containers have Traefik router labels with ``Host(`something.local`)`` rules, like this:
+They'll need either Traefik labels:
 
 ```
 labels:
   - traefik.http.routers.my_example_server.rule=Host(`example.local`)
+```
+
+Or, if you don't use Traefik and don't want to write all that, it now supports:
+
+```
+labels:
+  - quack_domains.hosts=example.local || subdomain.example.local
 ```
 
 If you don't have your own containers to play with, use my example! Run this:
@@ -69,9 +82,11 @@ If you don't have your own containers to play with, use my example! Run this:
 sudo docker compose -f compose_example.yaml up -d
 ```
 
+Or see `compose_example_without_traefik.yaml` for an example without Traefik.
+
 ### Step 4: Visit your domain!
 
-If you used `compose_example.yaml` from step #2, visit http://example.local/!
+Visit the label you set. If you used `compose_example.yaml` from step #2, visit http://example.local/!
 
 ## Details
 

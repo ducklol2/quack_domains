@@ -1,0 +1,10 @@
+# A minimal example compose.yaml that works with quack_domains, but doesn't use Traefik.
+name: my_example_compose_without_traefik  # Prevent Docker thinking these are orphans 🥲
+
+services:
+  my_example_server_without_traefik:
+    image: traefik/whoami
+    container_name: my_example_server_without_traefik
+    ports: [80:80]
+    labels:
+      - quack_domains.hosts=another_example.local || subdomain.another_example.local
