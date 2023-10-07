@@ -51,17 +51,13 @@ And then visit the domains from the compose YAML file - i.e. http://example.loca
 
 You'll need to rerun this if you modify your Traefik `Host()` labels; it currently only fetches the list of containers at startup (TODO: make it loop, occasionally?).
 
-## Using from other compose.yaml files
+## Development
 
-Make sure to join Traefik's network if you want it to be able to proxy; in your compose.yaml:
+To make things work on GitHub Codespaces, run these:
 
 ```
-services:
-  each_of_your_services:
-    networks: [traefik_network]
-
-networks:
-  traefik_network:
-    name: traefik_network
-    external: true
+sudo apt-get update
+sudo apt-get install -y avahi-daemon avahi-utils
+sudo service dbus start
+sudo avahi-daemon -D
 ```
