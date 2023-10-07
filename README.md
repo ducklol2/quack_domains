@@ -46,7 +46,15 @@ git clone https://github.com/ducklol2/quack_domains.git
 cd quack_domains
 ```
 
-### Step 2: Modify & start _your_ containers
+### Step 2: Start quack_domains
+
+```
+sudo docker compose up --build -d
+```
+
+It will monitor for Docker `start`/`stop` events.
+
+### Step 3: Modify & start _your_ containers
 
 Make sure your containers have Traefik router labels with ``Host(`something.local`)`` rules, like this:
 
@@ -55,25 +63,11 @@ labels:
   - traefik.http.routers.my_example_server.rule=Host(`example.local`)
 ```
 
-__IMPORTANT__: This tool only looks for containers __once__, __when it starts__, so you'll need to start them _before_ this tool.
-
-__TODO__: Look for containers continuously. ([GH Issue](https://github.com/ducklol2/quack_domains/issues/2))
-
 If you don't have your own containers to play with, use my example! Run this:
 
 ```
 sudo docker compose -f compose_example.yaml up -d
 ```
-
-### Step 3: Start quack_domains
-
-After starting the containers:
-
-```
-sudo docker compose up --build -d
-```
-
-If you modify your other containers, just rerun this command to restart and pick up any new labels (and stop any processes with old labels).
 
 ### Step 4: Visit your domain!
 
@@ -87,10 +81,10 @@ I love playing with containers just on my local network, and I _really_ like how
 
 ### Prior Art
 
-I swear that I looked around for something like this prior to building it myself, and somehow I didn't find anything - but turns out many others have built something similar. Check them out too, see what makes sense to you! I'll note that I think mine is simpler (only Node & Avahi as dependencies), but it doesn't automatically pick up label changes (yet!).
+I swear that I looked around for something like this prior to building it myself, and somehow I didn't find anything - but turns out many others have built something similar. Check them out too, see what makes sense to you! I'll note that I think mine is simpler (only Node & Avahi as dependencies).
 
  - https://gitlab.com/viraptor/docker_mdns: Written in Crystal, runs as a systemd service
- - https://github.com/hardillb/traefik-avahi-helper: Written in JS & Python, runs as a container, monitors for changes
+ - https://github.com/hardillb/traefik-avahi-helper: Written in JS & Python, runs as a container, also monitors for changes
 
 ### How it works
 
