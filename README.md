@@ -101,3 +101,20 @@ There's a few potential security issues currently:
 It might be possible to improve this tool if we can use an Avahi daemon _inside_ the container and just forward the mDNS messages through the Docker network.
 
 Usage of the Docker socket could be protected with [Tecnativa/docker-socket-proxy](https://github.com/Tecnativa/docker-socket-proxy).
+
+### Development
+
+I've spent some time to get this working on GitHub Codespaces. Well, sort of - of course the actual mDNS addresses don't work on the hosted VPS! But, Avahi runs without complaint, given the right `postStartCommand` to set it up, in ``.devcontainer/devcontainer.json`, so you can mostly see whether its working.
+
+Instead of building the container each time, I just run the script directly:
+
+```
+node index.js
+```
+
+And then, in a separate terminal, I start / stop / modify & re-up the included example and watch the logs:
+
+```
+sudo docker compose -f compose_example.yaml up -d
+sudo docker compose -f compose_example.yaml down
+```
