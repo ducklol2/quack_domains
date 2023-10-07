@@ -1,5 +1,7 @@
 # quack_domains
 
+## Automatically publish `.local` addresses from Docker Compose labels
+
 This tool looks for Docker compose labels like this:
 
 ```
