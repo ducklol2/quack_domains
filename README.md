@@ -2,7 +2,20 @@
 
 This tool publishes custom `.local` addresses by searching for Docker containers with Traefik host labels.
 
-Run as a Docker container, it executes a NodeJS script at startup that lists all Docker containers, guesses what your local IPv4 address is, looks for Traefik HTTP router rules containing ``Host(`...`)``, and runs an instance of `avahi-publish-address` for each host pointing at the local IP.
+Docker compose labels like this:
+
+```
+labels:
+  - traefik.http.routers.whoami.rule=Host(`example.local`)
+```
+
+Get run as commands like this:
+
+```
+avahi-publish-address -R example.local 192.168.1.123
+```
+
+Run as another Docker container, this executes a NodeJS script at startup that lists all Docker containers, guesses what your local IPv4 address is, looks for Traefik HTTP router rules containing ``Host(`...`)``, and runs an instance of `avahi-publish-address` for each host pointing at the local IP.
 
 __WARNING!__ This tool is very new and untested! You may need to dig into Node, Avahi, Traefik, and/or Docker if something doesn't work ;)
 
