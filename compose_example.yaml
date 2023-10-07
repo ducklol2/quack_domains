@@ -1,4 +1,5 @@
 # A minimal example compose.yaml that works with quack_domains.
+name: my_example_compose  # Prevent Docker thinking these are orphans 🥲
 
 services:
 

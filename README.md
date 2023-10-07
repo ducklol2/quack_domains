@@ -65,11 +65,13 @@ sudo docker compose -f compose_example.yaml up -d
 
 ### Step 3: Start quack_domains
 
-After starting the containers
+After starting the containers:
 
 ```
 sudo docker compose up --build -d
 ```
+
+If you modify your other containers, just rerun this command to restart and pick up any new labels (and stop any processes with old labels).
 
 ### Step 4: Visit your domain!
 
