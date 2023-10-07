@@ -55,7 +55,7 @@ labels:
 
 __IMPORTANT__: This tool only looks for containers __once__, __when it starts__, so you'll need to start them _before_ this tool.
 
-__TODO__: Look for containers continuously.
+__TODO__: Look for containers continuously. ([GH Issue](https://github.com/ducklol2/quack_domains/issues/2))
 
 If you don't have your own containers to play with, use my example! Run this:
 
