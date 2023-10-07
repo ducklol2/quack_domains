@@ -1,0 +1,20 @@
+services:
+
+  # A minimal traefik setup. For a better one, see:
+  # https://doc.traefik.io/traefik/user-guides/docker-compose/basic-example/
+  traefik:
+    image: traefik
+    container_name: traefik
+    command: [--providers.docker=true]
+    ports: [80:80]
+    volumes: [/var/run/docker.sock:/var/run/docker.sock:ro]
+
+  # A tiny web server as an example of one of your own.
+  # Super useful, thanks traefiklabs!
+  my_server:
+    image: traefik/whoami
+    container_name: my_server
+    labels:
+      # The first two (*.local) are for recognized by duck_domains.
+      # The last (Method(`GET`)) is just for testing convenience.
+      - traefik.http.routers.whoami.rule=Host(`example.local`) || Host(`subdomain.example.local`) || Method(`GET`)

@@ -1,4 +1,4 @@
-# subdomains
+# quack_domains
 
 This tool publishes custom `.local` addresses by searching for Docker containers with Traefik host labels.
 
@@ -20,7 +20,7 @@ __WARNING!__ This tool is very new and untested! You may need to dig into Node, 
        sudo apt update && sudo apt install avahi-daemon && sudo service dbus start && sudo avahi-daemon -D
        ```
  - A non-Linux client
-    - For some reason, Ubuntu seems to ignore mDNS subdomains - `example.local` works, but `subdomain.example.local` does not. ([GitHub issue](https://github.com/ducklol2/subdomains/issues/1))
+    - For some reason, Ubuntu seems to ignore mDNS subdomains - `example.local` works, but `subdomain.example.local` does not. ([GitHub issue](https://github.com/ducklol2/quack_domains/issues/1))
 
 ## Instructions
 
@@ -29,8 +29,8 @@ __WARNING!__ This tool is very new and untested! You may need to dig into Node, 
 From your favorite directory to keep code:
 
 ```
-git clone git@github.com:ducklol2/subdomains.git
-cd subdomains
+git clone git@github.com:ducklol2/quack_domains.git
+cd quack_domains
 ```
 
 ### Step 1: Start your Traefik & other containers
@@ -41,13 +41,13 @@ Or try my included example:
 sudo docker compose -f traefik_example.yaml up -d
 ```
 
-### Step 2: Start subdomains container
+### Step 2: Start quack_domains container
 
 ```
 sudo docker compose up --build -d
 ```
 
-And then visit the domains from the compose YAML file - i.e. http://example.local/ and http://subdomain.example.local/.
+And then visit the domains from the compose YAML file - i.e. http://example.local/ and http://subdomain.example.local/ (subdomains don't work on Ubuntu clients, though).
 
 You'll need to rerun this if you modify your Traefik `Host()` labels; it currently only fetches the list of containers at startup (TODO: make it loop, occasionally?).
 
