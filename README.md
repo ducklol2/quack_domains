@@ -83,6 +83,13 @@ If you used `compose_example.yaml` from step #2, visit http://example.local/!
 
 I love playing with containers just on my local network, and I _really_ like how Traefik allows configuration via `compose.yaml`, so I decided to combine the two.
 
+### Prior Art
+
+I swear that I looked around for something like this prior to building it myself, and somehow I didn't find anything - but turns out many others have built something similar. Check them out too, see what makes sense to you! I'll note that I think mine is simpler (only Node & Avahi as dependencies), but it doesn't automatically pick up label changes (yet!).
+
+ - https://gitlab.com/viraptor/docker_mdns: Written in Crystal, runs as a systemd service
+ - https://github.com/hardillb/traefik-avahi-helper: Written in JS & Python, runs as a container, monitors for changes
+
 ### How it works
 
 Run as a Docker container, this executes a NodeJS script at startup that lists all Docker containers, guesses what your local IPv4 address is, looks for Traefik HTTP router rules containing ``Host(`...`)``, and runs an instance of `avahi-publish-address` for each host pointing at the local IP. Note that it talks to the _host's_ `avahi-daemon`.
