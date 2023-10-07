@@ -1,19 +1,21 @@
+# A minimal example compose.yaml that works with quack_domains.
+
 services:
 
   # A minimal Traefik setup. For a better one, see:
   # https://doc.traefik.io/traefik/user-guides/docker-compose/basic-example/
-  traefik:
+  my_example_traefik:
     image: traefik
-    container_name: traefik
+    container_name: my_example_traefik
     command: [--providers.docker=true]
     ports: [80:80]
     volumes: [/var/run/docker.sock:/var/run/docker.sock:ro]
 
   # A tiny web server as an example of one of your own.
   # Super useful, thanks traefiklabs!
-  my_server:
+  my_example_server:
     image: traefik/whoami
-    container_name: my_server
+    container_name: my_example_server
     labels:
       # The first two (*.local) are for recognized by duck_domains.
       # The last (Method(`GET`)) is just for testing convenience.
