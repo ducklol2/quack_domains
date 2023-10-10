@@ -33,7 +33,7 @@ __WARNING!__ This tool is very new and untested! You may need to dig into Node, 
    - Avahi
    - Docker containers via Docker compose, with labels like one of those above
  - A client that supports mDNS, which is... virtually all of them. I've tested on Ubuntu, macOS, iOS, and ChromeOS.
-    - Ubuntu quirk: out of the box, it ignores mDNS subdomains - `example.local` works, but `subdomain.example.local` does not. ([GitHub issue](https://github.com/ducklol2/quack_domains/issues/1))
+    - Ubuntu quirk: out of the box, it ignores mDNS subdomains - `example.local` works, but `subdomain.example.local` does not. See [instructions below](#fix-ubuntu--maybe-other-linux-clients) to fix this.
 
 ## Instructions
 
@@ -87,6 +87,25 @@ Or see `compose_example_without_traefik.yaml` for an example without Traefik.
 ### Step 4: Visit your domain!
 
 Visit the label you set. If you used `compose_example.yaml` from step #2, visit http://example.local/!
+
+### Fix Ubuntu / maybe other Linux Clients
+
+On the default Ubuntu Desktop / Server installs, at least, mDNS is set up so that only domains like `example.local` work, but `subdomains.example.local` do not. To fix that (credit to this [AskUbuntu answer](https://askubuntu.com/a/1189644/1738003)):
+
+```
+sudo apt-get update && sudo apt-get install libnss-resolve
+sudo bash -c "echo .local > /etc/mdns.allow"
+sudo cp /etc/nsswitch.conf /etc/nsswitch.conf.backup
+sudo sed -i "s/mdns4_minimal/mdns4/" /etc/nsswitch.conf
+```
+
+That worked for me, but if anything goes wrong, let me know and you can reverse those changes with:
+
+```
+sudo cp /etc/nsswitch.conf.backup /etc/nsswitch.conf
+sudo rm /etc/mdns.allow
+sudo apt-get remove libnss-resolve
+```
 
 ## Details
 
