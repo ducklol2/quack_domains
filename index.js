@@ -15,15 +15,23 @@ const QUACK_HOST_REGEX = /([-\w\.]+\.local)/g;
 // Shoutout to this great list of quick Docker API curl testing commands:
 // https://sleeplessbeastie.eu/2021/12/13/how-to-query-docker-socket-using-curl/
 
+let DOCK_SOCK = '/var/run/docker.sock';
+if (process.env.DOCKER_HOST) {
+  // $DOCKER_HOST is set in Docker rootless mode.
+  // https://docs.docker.com/engine/security/rootless/
+  console.log('process.env.DOCKER_HOST:', typeof process.env.DOCKER_HOST);
+  DOCK_SOCK = process.env.DOCKER_HOST.replaceAll('unix://', '');
+}
+
 // https://docs.docker.com/engine/api/v1.43/#tag/Container/operation/ContainerList
 const REQUEST_OPTIONS_LIST = {
-  socketPath: '/run/docker.sock',
+  socketPath: DOCK_SOCK,
   path: 'http://localhost/containers/json',
 };
 
 // https://docs.docker.com/engine/api/v1.43/#tag/System/operation/SystemEvents
 const REQUEST_OPTIONS_MONITOR = {
-  socketPath: '/run/docker.sock',
+  socketPath: DOCK_SOCK,
   path: 'http://localhost/events',
 };
 
