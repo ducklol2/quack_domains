@@ -2,17 +2,11 @@
 
 ## Automatically publish `.local` addresses from Docker Compose labels
 
-This tool looks for Docker compose labels like this:
+This tool looks for Docker compose labels like either of these:
 
 ```yaml
 labels:
   - traefik.http.routers.my_example_server.rule=Host(`example.local`)
-```
-
-Or this, if not using Traefik:
-
-```yaml
-labels:
   - quack_domains.hosts=example.local
 ```
 
